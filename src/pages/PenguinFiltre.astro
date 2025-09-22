@@ -1,0 +1,55 @@
+---
+import Layout from "../layouts/Layout.astro";
+import penguins from "../../assets/penguins.json";
+---
+
+<Layout>
+  <h1 class="text-2xl m-8">Page Penguin avec filtre</h1>
+
+  <div class="m-4">
+    <label for="species" class="mr-2">Choisir une espèce :</label>
+    <select name="species" id="species" class="border p-2 rounded">
+      <option value="">All species</option>
+      <option value="Adelie">Adelie</option>
+      <option value="Chinstrap">Chinstrap</option>
+      <option value="Gentoo">Gentoo</option>
+    </select>
+  </div>
+
+  <div id="myplot" class="m-8"></div>
+
+  <script client:load type="module">
+    import * as Plot from "@observablehq/plot";
+
+    const penguinsData = JSON.parse(`{JSON.stringify(penguins)}`);
+    const selectSpecies = document.getElementById("species");
+    const plotDiv = document.getElementById("myplot");
+
+    function renderPlot() {
+      const species = selectSpecies.value;
+      plotDiv.innerHTML = "";
+
+      const plot = Plot.plot({
+        marks: [
+          Plot.dot(
+            penguinsData.filter(d => !species || d.species === species),
+            {
+              x: "culmen_length_mm",
+              y: "culmen_depth_mm",
+              stroke: "species"
+            }
+          ),
+        ],
+        grid: true,
+        nice: true,
+        width: 600,
+        height: 400,
+        x: { label: "Longueur du bec (mm)" },
+        y: { label: "Profondeur du bec (mm)" }
+      });
+
+      plotDiv.append(plot);
+    }
+
+    selectSpecies.addEventListener("change", renderPlot);
+    ren
