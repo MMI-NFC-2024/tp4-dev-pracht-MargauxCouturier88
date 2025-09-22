@@ -8,7 +8,7 @@ import penguins from "../../assets/penguins.json";
 
   <div class="m-4">
     <label for="species" class="mr-2">Choisir une espèce :</label>
-    <select name="species" id="species" class="border p-2 rounded">
+    <select id="species" class="border p-2 rounded">
       <option value="">All species</option>
       <option value="Adelie">Adelie</option>
       <option value="Chinstrap">Chinstrap</option>
@@ -18,10 +18,11 @@ import penguins from "../../assets/penguins.json";
 
   <div id="myplot" class="m-8"></div>
 
-  <script client:load type="module">
-    import * as Plot from "@observablehq/plot";
+  <script type="module">
+    import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
 
-    const penguinsData = JSON.parse(`{JSON.stringify(penguins)}`);
+    const penguins = JSON.parse(`{JSON.stringify(penguins)}`);
+
     const selectSpecies = document.getElementById("species");
     const plotDiv = document.getElementById("myplot");
 
@@ -29,27 +30,31 @@ import penguins from "../../assets/penguins.json";
       const species = selectSpecies.value;
       plotDiv.innerHTML = "";
 
+      const dataToPlot = species
+        ? penguins.filter(d => d.species === species)
+        : penguins;
+
       const plot = Plot.plot({
         marks: [
-          Plot.dot(
-            penguinsData.filter(d => !species || d.species === species),
-            {
-              x: "culmen_length_mm",
-              y: "culmen_depth_mm",
-              stroke: "species"
-            }
-          ),
+          Plot.dot(dataToPlot, {
+            x: "culmen_length_mm",
+            y: "culmen_depth_mm",
+            stroke: "species",
+          }),
         ],
         grid: true,
         nice: true,
         width: 600,
         height: 400,
         x: { label: "Longueur du bec (mm)" },
-        y: { label: "Profondeur du bec (mm)" }
+        y: { label: "Profondeur du bec (mm)" },
       });
 
       plotDiv.append(plot);
     }
 
     selectSpecies.addEventListener("change", renderPlot);
-    ren
+    renderPlot();
+  </script>
+</Layout>
+
