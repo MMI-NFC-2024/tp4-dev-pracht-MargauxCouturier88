@@ -1,6 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import penguins from "../../assets/penguins.json";
+import penguins from "../assets/penguins.json";
 ---
 
 <Layout>
@@ -8,7 +8,7 @@ import penguins from "../../assets/penguins.json";
 
   <div class="m-4">
     <label for="species" class="mr-2">Choisir une espèce :</label>
-    <select id="species" class="border p-2 rounded">
+    <select name="species" id="species" class="border p-2 rounded">
       <option value="">All species</option>
       <option value="Adelie">Adelie</option>
       <option value="Chinstrap">Chinstrap</option>
@@ -21,7 +21,8 @@ import penguins from "../../assets/penguins.json";
   <script type="module">
     import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
 
-    const penguins = JSON.parse(`{JSON.stringify(penguins)}`);
+    // Utilise exactement le nom importé
+    const penguins = JSON.parse(`{JSON.stringify(Penguins)}`);
 
     const selectSpecies = document.getElementById("species");
     const plotDiv = document.getElementById("myplot");
@@ -57,4 +58,3 @@ import penguins from "../../assets/penguins.json";
     renderPlot();
   </script>
 </Layout>
-
